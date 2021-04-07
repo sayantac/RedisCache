@@ -38,10 +38,16 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 		LOG.info("Follower of " + json.getString("name") + " with id:: " + 
 		json.getString("id") + " is " + json.getInt("followers"));
 		
-		authenticationRepository.create("60096310e52d3e000169a50c|schakrabor282", true);
+		Boolean auth = authenticationRepository.getValue("60096310e52d3e000169a50c|amalakar003");
 		
-		filterChain.doFilter(cachedBodyHttpServletRequest, response);
-
+		if(auth != null && auth == true) {
+			System.out.println("Authorized from Redis");
+			filterChain.doFilter(cachedBodyHttpServletRequest, response);
+		}
+		else {
+			System.out.println("Authorization set to Redis");
+			authenticationRepository.setValue("60096310e52d3e000169a50c|amalakar003", true);
+			filterChain.doFilter(cachedBodyHttpServletRequest, response);
+		}
 	}
-
 }

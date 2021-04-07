@@ -29,9 +29,9 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
 	@Autowired
 	RedisTemplate<String, Boolean> redisTemplate;
 	
-	public AuthenticationRepositoryImpl() {
-		this.hashOperations = this.redisTemplate.opsForHash();
-		this.valueOperations = this.redisTemplate.opsForValue();
+	public AuthenticationRepositoryImpl(RedisTemplate<String, Boolean> redisTemplate) {
+		this.hashOperations = redisTemplate.opsForHash();
+		this.valueOperations = redisTemplate.opsForValue();
 		/*
 		 * this.zsetOperations = this.redisTemplate.opsForZSet(); this.setOperations =
 		 * this.redisTemplate.opsForSet(); this.listOperations =
@@ -69,8 +69,7 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
 	@Override
 	public void setValue(String key, Boolean value) {
-		valueOperations.set(key, value);
-		redisTemplate.expire(key, 5, TimeUnit.MINUTES);
+		valueOperations.set(key, value, 5, TimeUnit.MINUTES);
 	}
 	
 	@Override
